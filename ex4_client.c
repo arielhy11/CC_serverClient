@@ -10,14 +10,18 @@
 
 
 void clientSignalHandler(){
-    char myPidStr[50];
     int pidNum = getpid();
+    char myPidStr[50];
     sprintf(myPidStr, "%d", pidNum);
     char clientFileName[150] = "to_client_";
     strcat(clientFileName, myPidStr);
-    int fdClientFile = open(clientFileName, O_RDONLY);
+    int fdClientFile = open(clientFileName, O_RDONLY,0777);
+    if (fdClientFile < 0){
+        printf("ERROR_FROM_EX4\n");
+        exit(-1);
+    }
     char buffer[1000];
-    memset(buffer,0,sizeof buffer);
+    memset(buffer,0,sizeof (buffer));
     read(fdClientFile, buffer, 1000);
     printf("%s", buffer);
     close(fdClientFile);
@@ -33,7 +37,11 @@ int main(int argc, char* argv[]) {
 
     //check 4 args
     int elementsInArgv = argc - 1;
-    if(elementsInArgv != 4){
+    if(elementsInArgv != 4){//if less than 4 arguments
+        printf("ERROR_FROM_EX4\n");
+        exit(-1);
+    }
+    if(atoi(argv[3]) > 4 || atoi(argv[3]) < 0){
         printf("ERROR_FROM_EX4\n");
         exit(-1);
     }
